@@ -7,6 +7,7 @@ void setup() {
 void loop() {
   if (Serial1.available()) {
     Serial.write(Serial1.read());
+    Serial.println();
   }
   if (Serial.available()) {
     Serial1.write(Serial.read());
