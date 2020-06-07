@@ -1,0 +1,38 @@
+
+catToiletProject
+  CatToilet
+    const cleanInterval
+    const fullWeight
+    usingStatus
+    cleaningStatus
+    lastStartTime
+    lastFinishTime
+    lastCleanTime
+    isUsing()
+    isCleanNeeded()
+    isEmptyNeeded()
+    getLastStartTime()
+    getLastFinishTime()
+    getLastCleanTime()
+
+  useToilet()
+    detectdCat()
+    notifyCondition()
+      bleNotify()
+        calcTime()
+        sendNotify()
+      ledNotify()
+  
+  cleanToilet()
+    rotateMotor()
+    notifyCondition()
+      bleNotify()
+        calcTime()
+        sendData()       
+    
+  emptyToilet()
+    notifyCondition()
+      bleNotify()
+        calcTime()
+        sendData()
+
