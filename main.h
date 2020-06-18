@@ -3,6 +3,6 @@
 
 #include <stdio.h>
 
-int RTC();
+int StepperMotor();
 
 #endif
