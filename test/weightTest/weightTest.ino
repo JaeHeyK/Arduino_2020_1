@@ -5,8 +5,14 @@
  
 HX711 scale;
  
-//-7050 worked for my 440lb max scale setup
-float calibration_factor = 10000;
+//-7050 worked for my 40lb max scale setup
+float calibration_factor = 1220;
+double past_time, curr_time;
+float weight_avg = 0.0;
+float weightArr[40];
+int arrIndex = 0;
+const int len = 40;
+int interval = 2000;
  
 void setup() 
 {
@@ -27,21 +33,34 @@ void setup()
   //This can be used to remove the need to tare the scale. Useful in permanent scale projects.
   Serial.print("Zero factor: ");
   Serial.println(zero_factor);
+  past_time = millis();
 }
  
 void loop() 
 {
+  curr_time = millis();
   //Adjust to this calibration factor
+
   scale.set_scale(calibration_factor);
- 
-  Serial.print("Reading: ");
-  Serial.print(scale.get_units()*1000, 1);
-  //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
-  //기존 예제가 파운드(lbs) 기준이지만 우리는 킬로그램(kg)을 쓸것이므로 'kg'로 바꿉시다.
-  Serial.print(" g"); 
-  Serial.print(" calibration_factor: ");
-  Serial.print(calibration_factor);
-  Serial.println();
+  weightArr[arrIndex] = scale.get_units()*1000;
+  arrIndex = (arrIndex+1) % len; 
+
+  if(curr_time-past_time > interval) {
+    Serial.print("Reading: ");
+    for(int i=0; i<len; i++) {
+      weight_avg += weightArr[i];
+    }
+    weight_avg = weight_avg / (float)len + 120.0;
+    Serial.print(weight_avg > 0.0 ? weight_avg : 0.0 , 1);
+    //Change this to kg and re-adjust the calibration factor if you follow SI units like a sane person
+    //기존 예제가 파운드(lbs) 기준이지만 우리는 킬로그램(kg)을 쓸것이므로 'kg'로 바꿉시다.
+    Serial.print(" g"); 
+    Serial.print(" calibration_factor: ");
+    Serial.print(calibration_factor);
+    Serial.println();
+    weight_avg = 0;
+    past_time = curr_time;
+  }
  
   if(Serial.available())
   {
