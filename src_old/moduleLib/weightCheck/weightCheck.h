@@ -7,7 +7,7 @@ class WeightSensor: public HX711 {
   private:
     const int LOADCELL_DOUT_PIN = 2;
     const int LOADCELL_SCK_PIN = 3;
-    float calib_factor = 7000;
+    float calib_factor = 2000;
     double past_time, curr_time;
     long offset_weight = 120.0;
     int interval = 2000;

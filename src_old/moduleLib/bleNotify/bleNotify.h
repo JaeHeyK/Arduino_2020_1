@@ -7,7 +7,6 @@ typedef enum _ActionType {
   EMPTYING
 } ActionType;
 
-void bleNotify(int type);
-void bleNotify(ActionType type);
+void bleNotify(DateTime now, ActionType type);
 
 #endif
