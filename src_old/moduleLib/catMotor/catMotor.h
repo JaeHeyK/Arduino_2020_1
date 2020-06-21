@@ -5,8 +5,8 @@
 
 class CatMotor: public Stepper {
   public: 
-    CatMotor(int, int, int, int, int);
-    void setSpeed(long);
+    CatMotor();
+    void setMotor();
     void step(int);
     void rotateMotor();
 };

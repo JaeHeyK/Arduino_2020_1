@@ -4,7 +4,7 @@
 
 void beginTime(const RTC_DS3231& rtc);
 DateTime getTime(const RTC_DS3231& rtc);
-int getTimeGapWithMinute(DateTime after, DateTime before);
-String getTimeWithString(DateTime time);
+int getTimeGapWithSecond(DateTime after, DateTime before);
+char* getTimeWithCharArray(DateTime now, char* dateBuffer);
 
 #endif
