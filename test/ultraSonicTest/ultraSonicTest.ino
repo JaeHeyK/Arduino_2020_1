@@ -1,5 +1,5 @@
-int trig = 8;
-int echo = 9;
+int trig = 7;
+int echo = 6;
  
 int led1 = 3; //실시간 초음파 인식 결과 램프
 int led2 = 4; //고양이 사용 여부 램프
@@ -47,7 +47,7 @@ void loop() {
 
   if(current_time - past_time > term(cat_state, enable_count)) {
     float distance = measureDistance();  
-    cur_sense = distance < 15 ? true : false;
+    cur_sense = distance < 8 ? true : false;
     
     Serial.print("Cat: ");
     Serial.print(cat_state);
