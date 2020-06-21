@@ -10,6 +10,7 @@ class CatSensor {
     bool cur_sense;
     bool cat_state = false;
     unsigned long past_time, current_time;
+    int useState = 0;
     
 
   public:

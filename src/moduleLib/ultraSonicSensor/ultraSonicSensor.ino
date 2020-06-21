@@ -11,10 +11,10 @@ void setup() {
 // 블록 안의 코드를 무한히 반복 실행됩니다.
 void loop() {
   //Serial.println(catUS.measureDistance());
-  int useState = catUS.checkUsing();
-  if (useState == 1) {
+  catUS.checkUsing();
+  if (catUS.isUsingStart()) {
     Serial.println("Start using");
-  } else if (useState == -1) {
+  } else if (catUS.isUsingFinish()) {
     Serial.println("Finish using");
   }
 }
