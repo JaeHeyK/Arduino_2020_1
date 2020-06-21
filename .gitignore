@@ -1,2 +1,3 @@
 #visual studio code에서 arduino upload하기 위한 설정 파일
 /.vscode
+.DS_store
