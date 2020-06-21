@@ -1,23 +1,12 @@
-#include
+#include <Arduino.h>
+#include "ultraSonicSensor.h"
 
-int trig = 7;
-int echo = 6;
- 
-int led1 = 3; //실시간 초음파 인식 결과 램프
-int led2 = 4; //고양이 사용 여부 램프
-int enable_count = 0;
-int enable_fail_count = 0;
-int disable_count = 0;
-bool cat_state = false; 
-unsigned long past_time, current_time;
-bool pre_sense = false, cur_sense;
-
-int interval (bool state, int enable_count) const {
-  return state || enable_count > 0 ? 200 : 2000 ;
+int CatSensor::checkInterval (bool state, int enable_count) {
+   return (state || enable_count > 0 ? 200 : 2000);
 }
 
-float measureDistance() const {
-  digitalWrite(trig, LOW);
+float CatSensor::measureDistance() {
+    digitalWrite(trig, LOW);
     digitalWrite(echo, LOW);
     delayMicroseconds(2);
     digitalWrite(trig, HIGH);
@@ -26,57 +15,63 @@ float measureDistance() const {
    
     unsigned long duration = pulseIn(echo, HIGH);
    
-    // 초음파의 속도는 초당 340미터를 이동하거나, 29마이크로초 당 1센치를 이동합니다.
-    // 따라서, 초음파의 이동 거리 = duration(왕복에 걸린시간) / 29 / 2 입니다.
     return (duration / 29.0 / 2.0);
 }
 
-void setup() {
-  Serial.begin(9600);
+void CatSensor::setUS() {
   pinMode(trig, OUTPUT);
   pinMode(echo, INPUT);
-  pinMode(led1, OUTPUT);
-  pinMode(led2, OUTPUT);
   past_time = millis();
 }
  
-void loop() {
+int CatSensor::checkUsing() {
   current_time = millis();
+  
+  int useState = 0;
 
-  if(current_time - past_time > interval(cat_state, enable_count)) {
+  if(current_time - past_time > checkInterval(cat_state, enable_count)) {
     float distance = measureDistance();  
+    // Serial.print(distance);
+    // Serial.print("  ");
     cur_sense = distance < 8 ? true : false;
-    
-    Serial.print("Cat: ");
-    Serial.print(cat_state);
-    Serial.print("\t");
-    Serial.print(distance);
-    Serial.print("cm");
    
-    if (cat_state == false) {
-      if(cur_sense) {
-        if(enable_count < 20) {
+    if (cur_sense) {
+      if(!cat_state) {
+        if(enable_count < 5) {
           enable_count++;
         } else {
           enable_count = 0;
-          cat_state = !cat_state;
+          cat_state = true;
+          useState = 1;
         }
       } else {
         enable_count = 0;
       }
     } else {
-      if(!cur_sense) {
-        if(disable_count < 30) {
+      if(cat_state) {
+        if(disable_count < 20) {
           disable_count++;
         } else {
           disable_count = 0;
-          cat_state = !cat_state;
+          cat_state = false;
+          useState = -1;
         }
       } else {
         disable_count = 0;
       }
     }
-    Serial.println();
     past_time = current_time;
+    Serial.print(enable_count);
+    Serial.print("  ");
+    Serial.println(useState);
   }
+  return useState;
 }
+
+// bool CatSensor::isUsingStart() {
+//   return (useState == 1);
+// }
+
+// bool CatSensor::isUsingFinish() {
+//   return (useState == -1);
+// }
