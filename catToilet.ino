@@ -6,7 +6,7 @@
 #include "weightCheck.h"
 #include "curruentTime.h"
 #include "bleNotify.h"
-//#include "src_old/toiletLib/toiletState.h"
+#include "statusLED.h"
 
 RTC_DS3231 mainRTC;
 CatSensor catUS;
@@ -21,10 +21,7 @@ void setup() {
   catUS.setUS();
   catMotor.setMotor();
   catBin.setWeight();
-  pinMode(12, OUTPUT);
-  digitalWrite(12, HIGH);
-  delay(500);
-  digitalWrite(12, LOW);
+  setLED();
 
   Serial.println("Hello!");
 }
@@ -32,20 +29,27 @@ void setup() {
 void loop() {
   catUS.checkUsing();
   catBin.checkWeight();
-  //current = getTime(mainRTC);
+  current = getTime(mainRTC);
 
   if (catUS.isUsingStart()) {
+    usingLED(ON);
     bleNotify(current,USING);
   }
   
   if (catUS.isUsingFinish()) {
+    usingLED(OFF);
     bleNotify(current, CLEANING);
     catMotor.rotateMotor();
   }
 
   if (catBin.isBinJustFulled()) {
-    Serial.println("Bin just fulled!!");
     bleNotify(current, EMPTYING);
+  }
+
+  if(catBin.isBinFulled()) {
+    weightLED(ON);
+  } else {
+    weightLED(OFF);
   }
 
 }

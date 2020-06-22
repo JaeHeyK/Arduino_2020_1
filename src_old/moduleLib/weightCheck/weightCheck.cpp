@@ -22,7 +22,6 @@ void WeightSensor::checkWeight() {
     float _weight = HX711::get_units()*1000;
     weight = (_weight > 0.0 ? _weight : 0.0) ;
     past_time = curr_time;
-    Serial.println(weight);
   }
 }
 

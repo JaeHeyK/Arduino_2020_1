@@ -60,12 +60,6 @@ void CatSensor::checkUsing() {
       
     }
     past_time = current_time;
-    Serial.print(cat_state);
-    Serial.print("  ");
-    Serial.print(enable_count);
-    Serial.print("  ");
-    Serial.print(disable_count);
-    Serial.print("\n");
   }
 }
 
