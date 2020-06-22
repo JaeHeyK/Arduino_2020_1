@@ -24,12 +24,12 @@ void CatSensor::setUS() {
   past_time = millis();
 }
  
-int CatSensor::checkUsing() {
+void CatSensor::checkUsing() {
   current_time = millis();
   
   useState = 0;
 
-  if(current_time - past_time > checkInterval(cat_state, enable_count)) {
+  if(current_time - past_time > 500) {
     float distance = measureDistance();  
     cur_sense = distance < 8 ? true : false;
    
@@ -43,7 +43,7 @@ int CatSensor::checkUsing() {
           useState = 1;
         }
       } else {
-        enable_count = 0;
+       enable_count = 0;
       }
     } else {
       if(cat_state) {
@@ -52,15 +52,21 @@ int CatSensor::checkUsing() {
         } else {
           disable_count = 0;
           cat_state = false;
-          useState = -1;
+          useState = 2;
         }
       } else {
         disable_count = 0;
       }
+      
     }
     past_time = current_time;
+    Serial.print(cat_state);
+    Serial.print("  ");
+    Serial.print(enable_count);
+    Serial.print("  ");
+    Serial.print(disable_count);
+    Serial.print("\n");
   }
-  return useState;
 }
 
 bool CatSensor::isUsingStart() {
@@ -68,5 +74,5 @@ bool CatSensor::isUsingStart() {
 }
 
 bool CatSensor::isUsingFinish() {
-  return (useState == -1);
+  return (useState == 2);
 }

@@ -17,7 +17,7 @@ class CatSensor {
     int checkInterval(bool, int);
     float measureDistance();
     void setUS();
-    int checkUsing();
+    void checkUsing();
     bool isUsingStart();
     bool isUsingFinish();
 };

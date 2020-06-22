@@ -10,9 +10,11 @@ char typeString[3] = {'u', 'c', 'e'};
 
 void bleNotify(DateTime now, ActionType type) {
   //char date[12] = "2006221120";
+  // if(type <0) {
+  //   return;
+  // }
   getTimeWithCharArray(now, date);
   date[10] = typeString[type];
 
   Serial1.write(date);
-  date[12] = {0};
 }

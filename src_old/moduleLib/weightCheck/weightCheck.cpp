@@ -6,7 +6,7 @@
 void WeightSensor::setWeight() {
   HX711::begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   HX711::set_scale(calib_factor);
-  HX711::set_offset(120.0);
+  HX711::set_offset(offset_weight);
   //Reset the HX711:: to 0
   HX711::tare();
  
@@ -22,6 +22,7 @@ void WeightSensor::checkWeight() {
     float _weight = HX711::get_units()*1000;
     weight = (_weight > 0.0 ? _weight : 0.0) ;
     past_time = curr_time;
+    Serial.println(weight);
   }
 }
 
@@ -33,4 +34,8 @@ bool WeightSensor::isBinJustFulled() {
   }
   prevFullState = currFullState;
   return justFulled;
+}
+
+bool WeightSensor::isBinFulled() {
+  return (weight >= fullWeight ? true : false);
 }

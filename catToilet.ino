@@ -1,25 +1,18 @@
 #include <Wire.h>
 #include <RTClib.h>
 
-// #include "src/moduleLib/ultraSonicSensor/ultraSonicSensor.h"
-// #include "src/moduleLib/catMotor/catMotor.h"
-// #include "src/moduleLib/weightCheck/weightCheck.h"
-// #include "src/moduleLib/currentTime/curruentTime.h"
-// #include "src/moduleLib/bleNotify/bleNotify.h"
-// #include "src/toiletLib/toiletState.h"
-
 #include "ultraSonicSensor.h"
 #include "catMotor.h"
 #include "weightCheck.h"
 #include "curruentTime.h"
 #include "bleNotify.h"
-#include "src_old/toiletLib/toiletState.h"
+//#include "src_old/toiletLib/toiletState.h"
 
 RTC_DS3231 mainRTC;
 CatSensor catUS;
 CatMotor catMotor;
 WeightSensor catBin;
-DateTime current;
+DateTime current = DateTime(2020,6,23,11,30,0);
 
 void setup() {  
   Serial.begin(9600);
@@ -28,6 +21,10 @@ void setup() {
   catUS.setUS();
   catMotor.setMotor();
   catBin.setWeight();
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
+  delay(500);
+  digitalWrite(12, LOW);
 
   Serial.println("Hello!");
 }
@@ -35,22 +32,19 @@ void setup() {
 void loop() {
   catUS.checkUsing();
   catBin.checkWeight();
-  current = getTime(mainRTC);
-  
+  //current = getTime(mainRTC);
 
   if (catUS.isUsingStart()) {
-    bleNotify(current, USING);
-  } else if (catUS.isUsingFinish()) {
-    lastUsingTime = current;
+    bleNotify(current,USING);
+  }
+  
+  if (catUS.isUsingFinish()) {
+    bleNotify(current, CLEANING);
+    catMotor.rotateMotor();
   }
 
-  // if((getTimeGapWithSecond(current, lastUsingTime) > 30)) {
-  //   bleNotify(current, CLEANING);
-  //   catMotor.rotateMotor();
-  //   lastUsingTime = NULL;
-  // }
-
   if (catBin.isBinJustFulled()) {
+    Serial.println("Bin just fulled!!");
     bleNotify(current, EMPTYING);
   }
 

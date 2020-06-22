@@ -9,10 +9,10 @@ class WeightSensor: public HX711 {
     const int LOADCELL_SCK_PIN = 3;
     float calib_factor = 2000;
     double past_time, curr_time;
-    long offset_weight = 120.0;
+    long offset_weight = 0.0;
     int interval = 2000;
     float weight = 0.0;
-    float fullWeight = 200;
+    float fullWeight = 100;
     bool prevFullState = false, currFullState = false;
 
   public:
@@ -20,6 +20,7 @@ class WeightSensor: public HX711 {
     void setWeight();
     void checkWeight();
     bool isBinJustFulled();
+    bool isBinFulled();
 };
 
 #endif
