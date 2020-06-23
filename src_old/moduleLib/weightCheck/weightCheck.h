@@ -12,7 +12,7 @@ class WeightSensor: public HX711 {
     long offset_weight = 0.0;
     int interval = 2000;
     float weight = 0.0;
-    float fullWeight = 100;
+    float fullWeight = 300;
     bool prevFullState = false, currFullState = false;
 
   public:

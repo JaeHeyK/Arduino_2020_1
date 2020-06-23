@@ -3,6 +3,7 @@
 
 void beginTime(const RTC_DS3231& rtc) {
   rtc.begin();
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 DateTime getTime(const RTC_DS3231& rtc) {
@@ -20,7 +21,7 @@ int getTimeGapWithSecond(DateTime after, DateTime before) {
 }
 
 char* getTimeWithCharArray(DateTime now, char* dateBuffer) {
-  now = now - TimeSpan(0,0,2,0);
+  
   dateBuffer[0] = (now.year()-2000)/10 + 48;
   dateBuffer[1] = (now.year()-2000)%10 + 48;
   dateBuffer[2] = now.month()/10 + 48;

@@ -1,43 +1,53 @@
 // Date and time functions using RX8025 RTC connected via I2C and Wire lib
 
 #include <Wire.h>
-#include "Sodaq_DS3231.h"
+#include <RTClib.h>
 
-char weekDay[][4] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+RTC_DS3231 rtc;
+
+//char weekDay[][4] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 
 void setup ()
 {
   Serial.begin(9600);
   Wire.begin();
   rtc.begin();
+  
+  if (! rtc.begin() )
+  {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  
+  if ( rtc.lostPower() )
+  {
+    Serial.println("RTC lost power, lets set the time!");
+    // following line sets the RTC to the date & time this sketch was compiled
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // This line sets the RTC with an explicit date & time, for example to set
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
+  
 }
 
-uint32_t old_ts;
+unsigned long What_time ()
+{
+  
+  DateTime now = rtc.now(); //get the current date-time
+
+  unsigned long now_time;
+
+  unsigned long now_day = now.day()*1000;
+  now_time = (now.year()-2000)*100000000 + now.month()*1000000 + now_day*10 + now.hour()*100 + now.minute();
+  delay(1000);
+
+  return now_time; 
+}
 
 void loop ()
 {
-  DateTime now = rtc.now(); //get the current date-time
-  uint32_t ts = now.getEpoch();
-
-  if (old_ts == 0 || old_ts != ts) {
-    old_ts = ts;
-    Serial.print(now.year(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.date(), DEC);
-    Serial.print(' ');
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.print(now.second(), DEC);
-    Serial.print(' ');
-    Serial.print(weekDay[now.dayOfWeek()]);
-    Serial.println();
-    //Serial.print("Seconds since Unix Epoch: ");
-    //Serial.print(ts, DEC);
-    //Serial.println();
-  }
-  delay(1000);
+  unsigned long now_time = What_time();
+  Serial.println(now_time);
+  
 }

@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <RTClib.h>
+#include <string.h>
 
 #include "ultraSonicSensor.h"
 #include "catMotor.h"
@@ -21,6 +22,7 @@ void setup() {
   catUS.setUS();
   catMotor.setMotor();
   catBin.setWeight();
+  beginTime(mainRTC);
   setLED();
 
   Serial.println("Hello!");
@@ -30,6 +32,9 @@ void loop() {
   catUS.checkUsing();
   catBin.checkWeight();
   current = getTime(mainRTC);
+  char timeStr[12] = {0};
+  Serial.println(getTimeWithCharArray(current, timeStr));
+  //Serial.println("hello");
 
   if (catUS.isUsingStart()) {
     usingLED(ON);
